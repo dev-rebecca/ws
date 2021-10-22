@@ -66,7 +66,7 @@ if (isset($_GET['page'])) {
             //
             // The ($_SESSION['is-logged-in']) is scattered through the switch case where required.
             // If it fails, the user cannot pass through the switch case.
-            // Note ($_SESSION['user']) is also passed through mulitple times to validate userID.
+            // Note ($_SESSION['user']) is also passed through to validate userID.
             if ($_SESSION['is-logged-in']) {
                 $res = (db_getUserID($_SESSION['user']));
                 if (is_array($res)) {
