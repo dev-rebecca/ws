@@ -57,22 +57,6 @@ if (password_verify($password, $hashed_password)) {
     }
 }
 
-// Update reg
-function db_updateReg ($id, $firstname, $lastname, $email) {
-    global $dbconn;
-    $sql = "UPDATE users SET first_name = :fn, last_name = :ln, email = :e WHERE user_id = :id";
-    $stmt = $dbconn->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->bindParam(':fn', $firstname, PDO::PARAM_STR);
-    $stmt->bindParam(':ln', $lastname, PDO::PARAM_STR);
-    $stmt->bindParam(':e', $email, PDO::PARAM_STR);
-    $stmt->execute();
-    if ($stmt->rowCount() > 0) { 
-        return true;
-    }
-    return false;
-}
-
 // Check db for duplicate email on update reg
 function db_updateRegisterEmailCheck ($email, $id) {
     global $dbconn;

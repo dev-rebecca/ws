@@ -157,32 +157,6 @@ if (isset($_GET['page'])) {
             }
             break;
 
-        // Update reg
-        case 'update-reg':
-            if ($_SESSION['is-logged-in']) {
-                if (isset($_POST['first-name'], $_POST['last-name'], $_POST['email'])) {
-                    if (email_regexCheck($_POST['email']) && (letter_regexCheck($_POST['first-name'], $_POST['last-name']))) {
-                        if (db_updateReg($_SESSION['user_id'], $_POST['first-name'], $_POST['last-name'], $_POST['email'])) {
-                            $resp_code = http_response_code(200);
-                            $resp_body = ['update-reg' => true];
-                        } else {
-                            $resp_code = http_response_code(400);
-                            $resp_body = ['update-reg' => 'database fail'];
-                        }
-                    } else {
-                        $resp_code = http_response_code(400);
-                        $resp_body = ['update-reg' => 'validity fail'];
-                    }
-                } else {
-                    $resp_code = http_response_code(400);
-                    $resp_body = ['update-reg' => 'post error'];
-                }
-            } else {
-                $resp_code = http_response_code(400);
-                $resp_body = ['update-reg' => 'not logged in'];
-            }
-            break;
-
         // Logout
         case 'logout':
             doLogout();
