@@ -6,7 +6,6 @@
 // This db.php file contains all connection info and queries that are required.
 // These have been placed into their own file for seperation of concerns.
 
-
 $dbURI = 'mysql:host=localhost;port=8889;dbname=wildlife-watcher';
 $dbconn = new PDO($dbURI, 'user1', 'user1');
 
@@ -59,15 +58,14 @@ if (password_verify($password, $hashed_password)) {
 }
 
 // Update reg
-function db_updateReg ($id, $firstname, $lastname, $email, $password) {
+function db_updateReg ($id, $firstname, $lastname, $email) {
     global $dbconn;
-    $sql = "UPDATE users SET first_name = :fn, last_name = :ln, email = :e, pass = :p WHERE user_id = :id";
+    $sql = "UPDATE users SET first_name = :fn, last_name = :ln, email = :e WHERE user_id = :id";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->bindParam(':fn', $firstname, PDO::PARAM_STR);
     $stmt->bindParam(':ln', $lastname, PDO::PARAM_STR);
     $stmt->bindParam(':e', $email, PDO::PARAM_STR);
-    $stmt->bindParam(':p', $password, PDO::PARAM_STR);
     $stmt->execute();
     if ($stmt->rowCount() > 0) { 
         return true;
@@ -332,6 +330,20 @@ function db_viewAllSpecies() {
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    return false;
+}
+
+// Edit first name
+function db_editFirstName ($user_id, $firstname) {
+    global $dbconn;
+    $sql = "UPDATE users SET first_name = :fn WHERE user_id = :uid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':fn', $firstname, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
     }
     return false;
 }

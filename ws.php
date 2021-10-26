@@ -160,9 +160,9 @@ if (isset($_GET['page'])) {
         // Update reg
         case 'update-reg':
             if ($_SESSION['is-logged-in']) {
-                if (isset($_POST['first-name'], $_POST['last-name'], $_POST['email'], $_POST['password'])) {
-                    if (password_RegexCheck($_POST['password']) && (email_regexCheck($_POST['email'])) && (letter_regexCheck($_POST['first-name'], $_POST['last-name']))) {
-                        if (db_updateReg($_SESSION['user_id'], $_POST['first-name'], $_POST['last-name'], $_POST['email'], $_POST['password'])) {
+                if (isset($_POST['first-name'], $_POST['last-name'], $_POST['email'])) {
+                    if (email_regexCheck($_POST['email']) && (letter_regexCheck($_POST['first-name'], $_POST['last-name']))) {
+                        if (db_updateReg($_SESSION['user_id'], $_POST['first-name'], $_POST['last-name'], $_POST['email'])) {
                             $resp_code = http_response_code(200);
                             $resp_body = ['update-reg' => true];
                         } else {
@@ -520,6 +520,31 @@ if (isset($_GET['page'])) {
             }
             break;
 
+        // Edit first name
+        case 'edit-first-name':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['first-name'])) {
+                    if (letter_regexCheck($_POST['first-name'], $_POST['last-name'])) {
+                        if (db_editFirstName($_SESSION['user_id'], $_POST['first-name'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-first-name' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-first-name' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-first-name' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-first-name' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-first-name' => 'not logged in'];
+            }
+            break;
 
         // File upload
         // case 'file-upload':
