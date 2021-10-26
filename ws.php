@@ -489,7 +489,7 @@ if (isset($_GET['page'])) {
         // View all species
         case 'view-all-species':
             if ($_SESSION['is-logged-in']) {
-                $res = (db_viewAllSpecies());
+                $res = (db_viewAllSpecies($_SESSION['user_id']));
                 if (is_array($res)) {
                     $resp_code = http_response_code(200);
                     $resp_body = ['view-all-species' => true];
@@ -524,7 +524,7 @@ if (isset($_GET['page'])) {
         case 'edit-first-name':
             if ($_SESSION['is-logged-in']) {
                 if (isset($_POST['first-name'])) {
-                    if (letter_regexCheck($_POST['first-name'], $_POST['last-name'])) {
+                    if (letter_regexCheck($_POST['first-name'])) {
                         if (db_editFirstName($_SESSION['user_id'], $_POST['first-name'])) {
                             $resp_code = http_response_code(200);
                             $resp_body = ['edit-first-name' => true];
@@ -543,6 +543,102 @@ if (isset($_GET['page'])) {
             } else {
                 $resp_code = http_response_code(400);
                 $resp_body = ['edit-first-name' => 'not logged in'];
+            }
+            break;
+
+        // Edit last name
+        case 'edit-last-name':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['last-name'])) {
+                    if (letter_regexCheck($_POST['last-name'])) {
+                        if (db_editLastName($_SESSION['user_id'], $_POST['last-name'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-last-name' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-last-name' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-last-name' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-last-name' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-last-name' => 'not logged in'];
+            }
+            break;
+
+        // Edit first name
+        case 'edit-email':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['email'])) {
+                    if (email_regexCheck($_POST['email'])) {
+                        if (db_editEmail($_SESSION['user_id'], $_POST['email'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-email' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-email' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-email' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-email' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-email' => 'not logged in'];
+            }
+            break;
+
+        // Edit password
+        case 'edit-password':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['password'])) {
+                    if (password_regexCheck($_POST['password'])) {
+                        if (db_editPassword($_SESSION['user_id'], $_POST['password'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-password' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-password' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-password' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-password' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-password' => 'not logged in'];
+            }
+            break;
+
+        // View user details
+        case 'view-user-details':
+            if ($_SESSION['is-logged-in']) {
+                $res = (db_viewUserDetails($_SESSION['user_id']));
+                if (is_array($res)) {
+                    $resp_code = http_response_code(200);
+                    $resp_body = ['view-user-details' => true];
+                    echo json_encode($res);
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['view-user-details' => 'array error'];
+                } 
+            } else {
+                $resp_code = http_response_code(403);
+                $resp_body = ['view-user-details' => 'not logged in'];
             }
             break;
 

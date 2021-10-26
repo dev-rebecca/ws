@@ -323,10 +323,11 @@ function db_isAdmin($email) {
 
 // For admin
 // View all species
-function db_viewAllSpecies() {
+function db_viewAllSpecies($user_id) {
     global $dbconn;
-    $sql = "SELECT * FROM species";
+    $sql = "SELECT * FROM species WHERE user_id = :uid";
     $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -344,6 +345,61 @@ function db_editFirstName ($user_id, $firstname) {
     $stmt->execute();
     if ($stmt->rowCount() > 0) { 
         return true;
+    }
+    return false;
+}
+
+// Edit last name
+function db_editLastName ($user_id, $lastname) {
+    global $dbconn;
+    $sql = "UPDATE users SET last_name = :ln WHERE user_id = :uid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':ln', $lastname, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
+
+// Edit email
+function db_editEmail($user_id, $email) {
+    global $dbconn;
+    $sql = "UPDATE users SET email = :e WHERE user_id = :uid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':e', $email, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
+
+// Edit password
+function db_editPassword ($user_id, $password) {
+    global $dbconn;
+    $sql = "UPDATE users SET pass= :p WHERE user_id = :uid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam('p', $password, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
+
+// View user details
+function db_viewUserDetails ($user_id) {
+    global $dbconn;
+    $sql = "SELECT * FROM users WHERE user_id = :uid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     return false;
 }
