@@ -226,16 +226,13 @@ function db_speciesCount ($user_id, $species) {
 }
 
 // Edit animal
-function db_editAnimal ($animal_id, $species_id, $user_id, $name, $notes, $gender) {
+function db_editAnimal ($animal_id, $species_id, $user_id) {
     global $dbconn;
-    $sql = "UPDATE animals SET species_id = :sid, user_id = :uid, nickname = :name, notes = :notes, gender = :g WHERE animal_id = :aid";
+    $sql = "UPDATE animals SET species_id = :sid, user_id = :uid WHERE animal_id = :aid";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
     $stmt->bindParam(':sid', $species_id, PDO::PARAM_INT);
     $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
-    $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-    $stmt->bindParam(':notes', $notes, PDO::PARAM_STR);
-    $stmt->bindParam(':g', $gender, PDO::PARAM_STR);
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return true;
@@ -280,7 +277,7 @@ function db_deleteAccount($user_id) {
 }
 
 // File upload
-function fileUpload($image) {
+function db_addImage($image) {
     global $dbconn;
     $sql = "INSERT INTO image_test (image) VALUES (:i)";
     $stmt = $dbconn->prepare($sql);
@@ -384,6 +381,83 @@ function db_viewUserDetails ($user_id) {
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return false;
+}
+
+// View animal details
+function db_viewAnimalDetails ($user_id, $animal_id) {
+    global $dbconn;
+    $sql = "SELECT animal_type.type_name, species.name, animals.nickname, animals.notes, animals.gender, animals. maturity, animals.image
+    FROM animal_type
+    JOIN species ON animal_type.animal_type_id = species.animal_type_id
+    JOIN animals ON species.species_id = animals.species_id WHERE animals.animal_id = :aid AND animals.user_id = :uid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return false;
+}
+
+// Edit animal name
+function db_editAnimalName ($user_id, $name, $animal_id) {
+    global $dbconn;
+    $sql = "UPDATE animals SET nickname = :n WHERE user_id = :uid AND animal_id = :aid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':n', $name, PDO::PARAM_STR);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
+
+// Edit animal gender
+function db_editAnimalGender ($user_id, $gender, $animal_id) {
+    global $dbconn;
+    $sql = "UPDATE animals SET gender = :g WHERE user_id = :uid AND animal_id = :aid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':g', $gender, PDO::PARAM_STR);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
+
+// Edit animal maturity
+function db_editAnimalMaturity ($user_id, $maturity, $animal_id) {
+    global $dbconn;
+    $sql = "UPDATE animals SET maturity = :m WHERE user_id = :uid AND animal_id = :aid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':m', $maturity, PDO::PARAM_STR);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
+
+// Edit animal notes
+function db_editAnimalNotes ($user_id, $notes, $animal_id) {
+    global $dbconn;
+    $sql = "UPDATE animals SET notes = :n WHERE user_id = :uid AND animal_id = :aid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':n', $notes, PDO::PARAM_STR);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
     }
     return false;
 }

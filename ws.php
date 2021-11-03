@@ -369,9 +369,9 @@ if (isset($_GET['page'])) {
         // Edit animal
         case 'edit-animal':
             if (isUserLoggedIn()) {
-                if (isset($_POST['animal_id'], $_POST['species_id'], $_POST['name'], $_POST['notes'], $_POST['gender'])) {
-                    if (number_regexCheck($_POST['animal_id'], $_POST['species']) && letter_regexCheck($_POST['name'], $_POST['notes'], $_POST['gender'])) {
-                        if (db_editAnimal($_POST['animal_id'], $_POST['species_id'], $_SESSION['user_id'], $_POST['name'], $_POST['notes'], $_POST['gender'])) {
+                if (isset($_POST['animal_id'], $_POST['species_id'])) {
+                    if (number_regexCheck($_POST['animal_id'], $_POST['species_id'])) {
+                        if (db_editAnimal($_POST['animal_id'], $_POST['species_id'], $_SESSION['user_id'])) {
                             $resp_code = http_response_code(200);
                             $resp_body = ['edit-animal' => true];
                         } else {
@@ -616,15 +616,180 @@ if (isset($_GET['page'])) {
             }
             break;
 
+        // View aniamal details
+        case 'view-animal-details':
+            if ($_SESSION['is-logged-in']) {
+                $res = (db_viewAnimalDetails($_SESSION['user_id'], $_POST['animal_id']));
+                if (is_array($res)) {
+                    $resp_code = http_response_code(200);
+                    $resp_body = ['view-animal-details' => true];
+                    echo json_encode($res);
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['view-animal-details' => 'array error'];
+                } 
+            } else {
+                $resp_code = http_response_code(403);
+                $resp_body = ['view-animal-details' => 'not logged in'];
+            }
+            break;
+
+        // Edit animal name
+        case 'edit-animal-name':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['name'], $_POST['animal_id'])) {
+                    if (letter_regexCheck($_POST['name']) && (number_regexCheck($_POST['animal_id']))) {
+                        if (db_editAnimalName($_SESSION['user_id'], $_POST['name'], $_POST['animal_id'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-animal-name' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-animal-name' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-animal-name' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-animal-name' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-animal-name' => 'not logged in'];
+            }
+            break;
+
+        // Edit animal gender
+        case 'edit-animal-gender':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['gender'], $_POST['animal_id'])) {
+                    if (letter_regexCheck($_POST['gender']) && (number_regexCheck($_POST['animal_id']))) {
+                        if (db_editAnimalGender($_SESSION['user_id'], $_POST['gender'], $_POST['animal_id'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-animal-gender' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-animal-gender' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-animal-gender' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-animal-gender' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-animal-gender' => 'not logged in'];
+            }
+            break;
+
+        // Edit animal maturity
+        case 'edit-animal-maturity':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['maturity'], $_POST['animal_id'])) {
+                    if (letter_regexCheck($_POST['maturity']) && (number_regexCheck($_POST['animal_id']))) {
+                        if (db_editAnimalMaturity($_SESSION['user_id'], $_POST['maturity'], $_POST['animal_id'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-animal-maturity' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-animal-maturity' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-animal-maturity' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-animal-maturity' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-animal-gender' => 'not logged in'];
+            }
+            break;
+
+        // Edit animal notes
+        case 'edit-animal-notes':
+            if ($_SESSION['is-logged-in']) {
+                if (isset($_POST['notes'], $_POST['animal_id'])) {
+                    if (letter_regexCheck($_POST['notes']) && (number_regexCheck($_POST['animal_id']))) {
+                        if (db_editAnimalNotes($_SESSION['user_id'], $_POST['notes'], $_POST['animal_id'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-animal-notes' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-animal-notes' => 'database fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['edit-animal-notes' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-animal-notes' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['edit-animal-notes' => 'not logged in'];
+            }
+            break;
+
         // File upload
-        // case 'file-upload':
-        //     if (isset($_POST['image'])) {
-        //         $resp_code = http_response_code(200);
-        //         $resp_body = ['file-upload' => true];
-        //     } else {
-        //         $resp_code = http_response_code(400);
-        //         $resp_body = ['file-upload' => 'not set'];
-        //     }
+        case 'upload-image':
+            
+            $target_dir = "uploads/";
+            $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            $uploadOk = 1;
+            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+            
+            // Check if image file is a actual image or fake image
+            if(isset($_POST["submit"])) {
+              $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+              if($check !== false) {
+                echo "File is an image - " . $check["mime"] . ".";
+                $uploadOk = 1;
+              } else {
+                echo "File is not an image.";
+                $uploadOk = 0;
+              }
+            }
+            
+            // Check if file already exists
+            if (file_exists($target_file)) {
+              echo "Sorry, file already exists.";
+              $uploadOk = 0;
+            }
+            
+            // Check file size
+            if ($_FILES["fileToUpload"]["size"] > 500000) {
+              echo "Sorry, your file is too large.";
+              $uploadOk = 0;
+            }
+            
+            // Allow certain file formats
+            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif" ) {
+              echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+              $uploadOk = 0;
+            }
+            
+            // Check if $uploadOk is set to 0 by an error
+            if ($uploadOk == 0) {
+              echo "Sorry, your file was not uploaded.";
+            // if everything is ok, try to upload file
+            } else {
+              if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+              } else {
+                echo "Sorry, there was an error uploading your file.";
+              }
+            }
+            
+
     }
 }
 
