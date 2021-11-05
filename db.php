@@ -461,3 +461,19 @@ function db_editAnimalNotes ($user_id, $notes, $animal_id) {
     }
     return false;
 }
+
+// Add species
+function db_addSpecies ($user_id, $name, $animal_type_id) {
+    global $dbconn;
+    $sql = "INSERT INTO species (name, user_id, animal_type_id) 
+            VALUES (:n, :uid, :atid)";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':n', $name, PDO::PARAM_STR);
+    $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':atid', $animal_type_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+}
