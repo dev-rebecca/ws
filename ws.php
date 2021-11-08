@@ -167,9 +167,9 @@ if (isset($_GET['page'])) {
         // Add animal
         case 'add-animal':
             if (isUserLoggedIn()) {
-                if (isset($_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'])) {
-                    if (letter_regexCheck($_POST['name']) && (letter_regexCheck($_POST['notes'])) && (letter_regexCheck($_POST['gender'])) && (letter_regexCheck($_POST['maturity'])) && (number_regexCheck($_POST['species_id']))) {
-                        if (db_addAnimal($_SESSION['user_id'], $_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'])) {
+                if (isset($_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'])) {
+                    if (letter_regexCheck($_POST['name']) && (letter_regexCheck($_POST['notes'])) && (letter_regexCheck($_POST['gender'])) && (number_regexCheck($_POST['image_id'])) && (letter_regexCheck($_POST['maturity'])) && (number_regexCheck($_POST['species_id']))) {
+                        if (db_addAnimal($_SESSION['user_id'], $_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'])) {
                             $resp_code = http_response_code(201);
                             $resp_body = ['add-animal' => true];
                         } else {
@@ -767,8 +767,8 @@ if (isset($_GET['page'])) {
         // View image
         case 'view-image':
             if (isUserLoggedIn()) {
-                if (isset($_POST['image_id'])) {
-                    $image = db_viewImage($_POST['image_id']);
+                if (isset($_POST['animal_id'])) {
+                    $image = db_viewImage($_POST['animal_id']);
                     $imagePath="http://localhost:8080/ws/uploads/";
                     $image_url = $image[0]["image"];
                     echo($imagePath . $image_url);
@@ -797,10 +797,34 @@ if (isset($_GET['page'])) {
                     'image_source'		=>	'uploads/' . $new_name
                 );
             
-              upload_to_db($new_name);
+                upload_to_db($new_name);
                 echo json_encode($data);
             
             }
+            break;
+
+        // Get image ID
+        case 'get-image-id':
+            if (isUserLoggedIn()) {
+                if (isset($_POST['image'])) {
+                    $res = db_getImageId($_POST['image']);
+                    if (is_array($res)) {
+                        $resp_code = http_response_code(200);
+                        $resp_body = ['get-image-id' => true];
+                        echo json_encode($res);
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['get-image-id' => 'db error'];
+                    }
+                } else {
+                    $resp_code = http_response_code(403);
+                    $resp_body = ['get-image-id' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(403);
+                $resp_body = ['get-image-id' => 'not logged in'];
+            }
+            break;
     }
 }
 

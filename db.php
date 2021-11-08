@@ -104,10 +104,10 @@ function db_log ($session_id, $action, $resp_code, $user, $ip, $role) {
 }
 
 // Add animal
-function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity) {
+function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity, $image_id) {
     global $dbconn;
-    $sql = "INSERT INTO animals (user_id, nickname, notes, gender, species_id, maturity) 
-            VALUES(:uid, :name, :notes, :gender, :sid, :m)";
+    $sql = "INSERT INTO animals (user_id, nickname, notes, gender, species_id, maturity, image_id) 
+            VALUES(:uid, :name, :notes, :gender, :sid, :m, :iid)";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
@@ -115,6 +115,7 @@ function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity) 
     $stmt->bindParam(':gender', $gender, PDO::PARAM_STR);
     $stmt->bindParam(':sid', $species_id, PDO::PARAM_INT);
     $stmt->bindParam(':m', $maturity, PDO::PARAM_STR);
+    $stmt->bindParam(':iid', $image_id, PDO::PARAM_INT);
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return true;
@@ -481,7 +482,7 @@ function db_addSpecies ($user_id, $name, $animal_type_id) {
 // View image
 function db_viewImage ($id) {
     global $dbconn;
-    $sql = "SELECT image FROM image_test WHERE id = :id";
+    $sql = "SELECT image FROM images WHERE id = :id";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
@@ -489,12 +490,12 @@ function db_viewImage ($id) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     return false;
-  }
+}
 
-  // Upload image
-  function upload_to_db($photo) {
+    // Upload image
+    function upload_to_db($photo) {
     global $dbconn;
-    $sql = "INSERT INTO image_test (image) 
+    $sql = "INSERT INTO images (image) 
             VALUES (:i)";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':i', $photo, PDO::PARAM_STR);
@@ -503,4 +504,17 @@ function db_viewImage ($id) {
         return true;
     }
     return false;
-  }
+}
+
+// Get image ID
+function db_getImageId ($image) {
+    global $dbconn;
+    $sql = "SELECT image_id FROM images WHERE image = :i";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':i', $image, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return false;
+}
