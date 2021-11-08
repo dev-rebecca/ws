@@ -477,3 +477,30 @@ function db_addSpecies ($user_id, $name, $animal_type_id) {
     }
     return false;
 }
+
+// View image
+function db_viewImage ($id) {
+    global $dbconn;
+    $sql = "SELECT image FROM image_test WHERE id = :id";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return false;
+  }
+
+  // Upload image
+  function upload_to_db($photo) {
+    global $dbconn;
+    $sql = "INSERT INTO image_test (image) 
+            VALUES (:i)";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':i', $photo, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) { 
+        return true;
+    }
+    return false;
+  }

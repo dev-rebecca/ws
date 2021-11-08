@@ -763,8 +763,44 @@ if (isset($_GET['page'])) {
                 $resp_body = ['add-species' => 'not logged in'];
             }
             break;
-        
 
+        // View image
+        case 'view-image':
+            if (isUserLoggedIn()) {
+                if (isset($_POST['image_id'])) {
+                    $image = db_viewImage($_POST['image_id']);
+                    $imagePath="http://localhost:8080/ws/uploads/";
+                    $image_url = $image[0]["image"];
+                    echo($imagePath . $image_url);
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['view-image' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(403);
+                $resp_body = ['view-image' => 'not logged in'];
+            }
+            break;
+        
+        // Add image
+        case 'add-image':
+            if(isset($_FILES['sample_image']))
+            {
+            
+                $extension = pathinfo($_FILES['sample_image']['name'], PATHINFO_EXTENSION);
+            
+                $new_name = time() . '.' . $extension;
+            
+                move_uploaded_file($_FILES['sample_image']['tmp_name'], 'uploads/' . $new_name);
+            
+                $data = array(
+                    'image_source'		=>	'uploads/' . $new_name
+                );
+            
+              upload_to_db($new_name);
+                echo json_encode($data);
+            
+            }
     }
 }
 
