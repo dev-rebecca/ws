@@ -825,6 +825,11 @@ if (isset($_GET['page'])) {
                 $resp_body = ['get-image-id' => 'not logged in'];
             }
             break;
+        
+        // Test
+        case 'test':
+            $res = db_test();
+            echo json_encode($res);
     }
 }
 

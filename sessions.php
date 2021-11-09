@@ -31,7 +31,7 @@ function rateLimit_PerSecond() {
 // Rate limiter delares 24hours prior and checks the user_logs in database.
 // If more than 1000 rows exist for a user, the rate limiter activates.
 function rateLimit_PerDay() {
-    global $dbconn;
+    $dbconn = db_connect();
     $dayago = strtotime('-1 day');
     $curruser =  $_SESSION['user'];
     $sql = "SELECT user FROM user_logs WHERE timestamp < $dayago AND user = $curruser";
