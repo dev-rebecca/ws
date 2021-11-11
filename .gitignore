@@ -1,3 +1,4 @@
 .env/
 .vendor/
 ./connect-database.php
+connect-database.php
