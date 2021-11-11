@@ -1,16 +1,13 @@
 <?php
 
+include('./connection.php');
+include('./connect-database.php');
+
 // COMMENTS FOR JOHN
 // Question 12
 //
 // This db.php file contains all connection info and queries that are required.
 // These have been placed into their own file for seperation of concerns.
-
-// Connect to database
-function db_connect() {
-    $dbURI = 'mysql:host=localhost;port=8889;dbname=wildlife-watcher';
-    return new PDO($dbURI, 'user1', 'user1');
-}
 
 // Register
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
