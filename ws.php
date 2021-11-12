@@ -769,7 +769,7 @@ if (isset($_GET['page'])) {
             if (isUserLoggedIn()) {
                 if (isset($_POST['animal_id'])) {
                     $image = db_viewImage($_POST['animal_id']);
-                    $imagePath="http://localhost:8080/ws/uploads/";
+                    $imagePath="https://localhost:8080/ws/uploads/";
                     $image_url = $image[0]["image"];
                     echo($imagePath . $image_url);
                 } else {
