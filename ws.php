@@ -168,7 +168,7 @@ if (isset($_GET['page'])) {
         case 'add-animal':
             if (isUserLoggedIn()) {
                 if (isset($_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'])) {
-                    if (letter_regexCheck($_POST['name']) && (letter_regexCheck($_POST['notes'])) && (letter_regexCheck($_POST['gender'])) && (number_regexCheck($_POST['image_id'])) && (letter_regexCheck($_POST['maturity'])) && (number_regexCheck($_POST['species_id']))) {
+                    if (letter_regexCheck($_POST['name']) && (letterLong_regexCheck($_POST['notes'])) && (letter_regexCheck($_POST['gender'])) && (number_regexCheck($_POST['image_id'])) && (letter_regexCheck($_POST['maturity'])) && (number_regexCheck($_POST['species_id']))) {
                         if (db_addAnimal($_SESSION['user_id'], $_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'])) {
                             $resp_code = http_response_code(201);
                             $resp_body = ['add-animal' => true];
@@ -205,6 +205,24 @@ if (isset($_GET['page'])) {
             } else {
                 $resp_code = http_response_code(400);
                 $resp_body = ['view-animals' => 'user id not provided'];
+            }            
+            break;
+
+        // Get species from species ID
+        case 'get-species-from-id':
+            if (isUserLoggedIn()) {
+                $res = db_getSpeciesFromID($_POST['species']);
+                if (is_array($res)) {
+                    $resp_code = http_response_code(200);
+                    $resp_body = ['get-species-from-id' => true];
+                    echo json_encode($res);
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['get-species-from-id' => 'db error'];
+                }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['get-species-from-id' => 'species not provided'];
             }            
             break;
 
@@ -422,7 +440,7 @@ if (isset($_GET['page'])) {
         case 'add-log':
             if (isUserLoggedIn()) {
                 if (isset($_POST['title'], $_POST['text'], $_POST['animal_id'])) {
-                    if (letter_regexCheck($_POST['title']) && (letter_regexCheck($_POST['text'])) && (number_regexCheck($_POST['animal_id']))) {
+                    if (letter_regexCheck($_POST['title']) && (letterLong_regexCheck($_POST['text'])) && (number_regexCheck($_POST['animal_id']))) {
                         if (db_addLog($_POST['title'], $_POST['text'], $_POST['animal_id'])) {
                             $resp_code = http_response_code(200);
                             $resp_body = ['add-log' => true];

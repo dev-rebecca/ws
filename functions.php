@@ -27,6 +27,15 @@ function letter_regexCheck ($text) {
     }
 }
 
+// Long text, letters only regex
+function letterLong_regexCheck ($text) {
+    if (preg_match('/^[a-zA-Z #$%^&*()+=\-\[\]\';,.\/{}|":<>?~\\\\]{2,250}$/', $text)) { // Letters only, min 2, max 30
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // Numbers only regex
 function number_regexCheck ($number) {
     if (ctype_digit($number)) { // Letters only, min 2, max 30

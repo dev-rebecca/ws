@@ -126,13 +126,26 @@ function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity, 
 // View animals
 function db_viewAnimals ($id, $type_name) {
     $dbconn = db_connect();
-    $sql = "SELECT distinct species.name
+    $sql = "SELECT DISTINCT species.name, species.species_id
     FROM species
     JOIN animal_type ON species.animal_type_id = animal_type.animal_type_id
     JOIN animals ON species.species_id = animals.species_id WHERE animals.user_id = :id AND animal_type.type_name = :tn";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->bindParam(':tn', $type_name, PDO::PARAM_STR);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return false;
+}
+
+// Get species from species ID
+function db_getSpeciesFromID ($species_id) {
+    $dbconn = db_connect();
+    $sql = "SELECT * FROM species WHERE species_id = :sid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':sid', $species_id, PDO::PARAM_INT);
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
