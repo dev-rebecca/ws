@@ -803,6 +803,27 @@ if (isset($_GET['page'])) {
             }
             break;
 
+        // Add image
+        case 'edit-image':
+            if(isset($_FILES['sample_image_edit']))
+            {
+            
+                $extension = pathinfo($_FILES['sample_image_edit']['name'], PATHINFO_EXTENSION);
+            
+                $new_name = time() . '.' . $extension;
+            
+                move_uploaded_file($_FILES['sample_image_edit']['tmp_name'], 'uploads/' . $new_name);
+            
+                $data = array(
+                    'image_source'		=>	'uploads/' . $new_name
+                );
+            
+                upload_to_db($new_name);
+                echo json_encode($data);
+            
+            }
+            break;
+
         // Get image ID
         case 'get-image-id':
             if (isUserLoggedIn()) {
@@ -825,11 +846,32 @@ if (isset($_GET['page'])) {
                 $resp_body = ['get-image-id' => 'not logged in'];
             }
             break;
-        
-        // Test
-        case 'test':
-            $res = db_test();
-            echo json_encode($res);
+
+        // Edit animal image
+        case 'edit-animal-image':
+            if (isUserLoggedIn()) {
+                if (isset($_POST['animal_id'], $_POST['image_id'])) {
+                    // if (number_regexCheck($_POST['animal_id'], $_POST['species_id'])) {
+                        if (db_editAnimalImage($_POST['animal_id'], $_POST['image_id'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['edit-animal-image' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['edit-animal-image' => 'db fail'];
+                        }
+                    // } else {
+                    //     $resp_code = http_response_code(400);
+                    //     $resp_body = ['edit-animal-image' => 'empty value/s'];
+                    // }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['edit-animal-image' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(403);
+                $resp_body = ['edit-animal-image' => 'not logged in'];
+            }
+            break;
     }
 }
 

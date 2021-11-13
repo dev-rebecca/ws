@@ -533,3 +533,17 @@ function db_test () {
     }
     return false;
 }
+
+// Edit animal image
+function db_editAnimalImage ($animal_id, $image_id) {
+    $dbconn = db_connect();
+    $sql = "UPDATE animals SET image_id = :iid WHERE animal_id = :aid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':iid', $image_id, PDO::PARAM_INT);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return true;
+    }
+    return false;
+}
