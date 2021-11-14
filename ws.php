@@ -169,7 +169,7 @@ if (isset($_GET['page'])) {
             if (isUserLoggedIn()) {
                 if (isset($_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'])) {
                     if (letter_regexCheck($_POST['name']) && (letterLong_regexCheck($_POST['notes'])) && (letter_regexCheck($_POST['gender'])) && (number_regexCheck($_POST['image_id'])) && (letter_regexCheck($_POST['maturity'])) && (number_regexCheck($_POST['species_id']))) {
-                        if (db_addAnimal($_SESSION['user_id'], $_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'])) {
+                        if (db_addAnimal($_SESSION['user_id'], $_POST['name'], $_POST['notes'], $_POST['gender'], $_POST['species_id'], $_POST['maturity'], $_POST['image_id'], $_POST['lng'], $_POST['lat'])) {
                             $resp_code = http_response_code(201);
                             $resp_body = ['add-animal' => true];
                         } else {
@@ -442,7 +442,7 @@ if (isset($_GET['page'])) {
                 if (isset($_POST['title'], $_POST['text'], $_POST['animal_id'])) {
                     if (letter_regexCheck($_POST['title']) && (letterLong_regexCheck($_POST['text'])) && (number_regexCheck($_POST['animal_id']))) {
                         if (db_addLog($_POST['title'], $_POST['text'], $_POST['animal_id'])) {
-                            $resp_code = http_response_code(200);
+                            $resp_code = http_response_code(201);
                             $resp_body = ['add-log' => true];
                         } else {
                             $resp_code = http_response_code(400);
@@ -888,6 +888,32 @@ if (isset($_GET['page'])) {
             } else {
                 $resp_code = http_response_code(403);
                 $resp_body = ['edit-animal-image' => 'not logged in'];
+            }
+            break;
+
+        // Add coords
+        case 'add-coords':
+            if (isUserLoggedIn()) {
+                if (isset($_POST['lng'], $_POST['lat'], $_POST['animal_id'])) {
+                    if (number_regexCheck($_POST['animal_id'])) {
+                        if (db_addCoords($_POST['lng'], $_POST['lat'], $_POST['animal_id'])) {
+                            $resp_code = http_response_code(200);
+                            $resp_body = ['add-coords' => true];
+                        } else {
+                            $resp_code = http_response_code(400);
+                            $resp_body = ['add-coords' => 'db fail'];
+                        }
+                    } else {
+                        $resp_code = http_response_code(400);
+                        $resp_body = ['add-coords' => 'validity fail'];
+                    }
+                } else {
+                    $resp_code = http_response_code(400);
+                    $resp_body = ['add-coords' => 'post error'];
+                }
+            } else {
+                $resp_code = http_response_code(403);
+                $resp_body = ['add-coords' => 'not logged in'];
             }
             break;
     }

@@ -20,7 +20,7 @@ function email_regexCheck ($email) {
 
 // Letters only regex
 function letter_regexCheck ($text) {
-    if (preg_match('/^[a-zA-Z ]{2,30}$/', $text)) { // Letters only, min 2, max 30
+    if (preg_match('/^[a-zA-Z !#$%^&*()+=\-\[\]\';,.\/{}|":<>?~\\\\]{2,30}$/', $text)) { // Letters only, min 2, max 30
         return true;
     } else {
         return false;
@@ -29,7 +29,7 @@ function letter_regexCheck ($text) {
 
 // Long text, letters only regex
 function letterLong_regexCheck ($text) {
-    if (preg_match('/^[a-zA-Z #$%^&*()+=\-\[\]\';,.\/{}|":<>?~\\\\]{2,250}$/', $text)) { // Letters only, min 2, max 30
+    if (preg_match('/^[a-zA-Z !#$%^&*()+=\-\[\]\';,.\/{}|":<>?~\\\\]{2,250}$/', $text)) { // Letters only, min 2, max 30
         return true;
     } else {
         return false;

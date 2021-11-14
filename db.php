@@ -104,10 +104,10 @@ function db_log ($session_id, $action, $resp_code, $user, $ip, $role) {
 }
 
 // Add animal
-function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity, $image_id) {
+function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity, $image_id, $lng, $lat) {
     $dbconn = db_connect();
-    $sql = "INSERT INTO animals (user_id, nickname, notes, gender, species_id, maturity, image_id) 
-            VALUES(:uid, :name, :notes, :gender, :sid, :m, :iid)";
+    $sql = "INSERT INTO animals (user_id, nickname, notes, gender, species_id, maturity, image_id, first_seen_long, first_seen_lat) 
+            VALUES(:uid, :name, :notes, :gender, :sid, :m, :iid, :lng, :lat)";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
@@ -116,6 +116,8 @@ function db_addAnimal($user_id, $name, $notes, $gender, $species_id, $maturity, 
     $stmt->bindParam(':sid', $species_id, PDO::PARAM_INT);
     $stmt->bindParam(':m', $maturity, PDO::PARAM_STR);
     $stmt->bindParam(':iid', $image_id, PDO::PARAM_INT);
+    $stmt->bindParam(':lng', $lng, PDO::PARAM_STR);
+    $stmt->bindParam(':lat', $lat, PDO::PARAM_STR);
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
         return true;
@@ -553,6 +555,21 @@ function db_editAnimalImage ($animal_id, $image_id) {
     $sql = "UPDATE animals SET image_id = :iid WHERE animal_id = :aid";
     $stmt = $dbconn->prepare($sql);
     $stmt->bindParam(':iid', $image_id, PDO::PARAM_INT);
+    $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($stmt->rowCount() > 0) {
+        return true;
+    }
+    return false;
+}
+
+// Add co-ordinates to animal
+function db_addCoords ($lng, $lat, $animal_id) {
+    $dbconn = db_connect();
+    $sql = "UPDATE animals SET first_seen_long = :lng, first_seen_lat = :lat WHERE animal_id = :aid";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bindParam(':lng', $lng, PDO::PARAM_STR);
+    $stmt->bindParam(':lat', $lat, PDO::PARAM_STR);
     $stmt->bindParam(':aid', $animal_id, PDO::PARAM_INT);
     $stmt->execute();
     if ($stmt->rowCount() > 0) {
