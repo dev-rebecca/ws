@@ -1,16 +1,8 @@
 <?php
 
-// COMMENTS FOR JOHN
-// Question 12
-//
-// This sessions.php file contains all functions relating to sessions.
-// These have been placed into their own file for seperation of concerns.
-
 session_start();
 
-// COMMENTS FOR JOHN
-// Question 13
-//
+
 // Rate limiter delares the time of last use, the current time and then calculates the difference.
 // If the difference is less than a second, the rate limiter activates.
 function rateLimit_PerSecond() {
@@ -25,9 +17,6 @@ function rateLimit_PerSecond() {
     $_SESSION['LAST_CALL'] = date("Y-m-d h:i:s");
 }
 
-// COMMENTS FOR JOHN
-// Question 13
-//
 // Rate limiter delares 24hours prior and checks the user_logs in database.
 // If more than 1000 rows exist for a user, the rate limiter activates.
 function rateLimit_PerDay() {

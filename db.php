@@ -3,12 +3,6 @@
 include('./connection.php');
 include('./connect-database.php');
 
-// COMMENTS FOR JOHN
-// Question 12
-//
-// This db.php file contains all connection info and queries that are required.
-// These have been placed into their own file for seperation of concerns.
-
 // Register
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 function db_doRegister ($firstname, $lastname, $email, $password) {

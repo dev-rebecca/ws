@@ -22,7 +22,7 @@ require_once('./sessions.php');
 //     die();
 // }
 
-// if ($_SERVER['QUERY_STRING'] != 'page=get-user-id') {
+// if ($_SERVER['QUERY_STRING']) {
 //     if (domainLock() == false) {
 //         // Show specific error page, then die
 //         die();
@@ -52,21 +52,11 @@ if (!isset($_SESSION['is-logged-in']))  {
 * 
 */
 
-// COMMENTS FOR JOHN
-// Question 15
-//
-// This is the switch case that checks all GET/POST structures
 if (isset($_GET['page'])) {
     switch($_GET['page']) {
 
         // Get user ID
         case 'get-user-id':
-            // COMMENTS FOR JOHN
-            // Question 14
-            //
-            // The ($_SESSION['is-logged-in']) is scattered through the switch case where required.
-            // If it fails, the user cannot pass through the switch case.
-            // Note ($_SESSION['user']) is also passed through to validate userID.
             if ($_SESSION['is-logged-in']) {
                 $res = (db_getUserID($_SESSION['user']));
                 if (is_array($res)) {
@@ -119,8 +109,7 @@ if (isset($_GET['page'])) {
 
         // Login
         case 'login':
-            // The below 'if' commented out for ease of testing only
-            // if ($_SESSION['is-logged-in'] == false) {
+            if ($_SESSION['is-logged-in'] == false) {
                 if (isset($_POST['email'], $_POST['password'])) {
                     if (email_regexCheck($_POST['email']) && (password_regexCheck($_POST['password']))) {
                         if (db_login($_POST['email'], $_POST['password'])) {
@@ -140,10 +129,10 @@ if (isset($_GET['page'])) {
                     $resp_code = http_response_code(400);
                     $resp_body = ['login' => 'post error'];
                 }
-            // } else {
-            //     $resp_code = http_response_code(400);
-            //     $resp_body = ['login' => 'already logged in'];
-            // }
+            } else {
+                $resp_code = http_response_code(400);
+                $resp_body = ['login' => 'already logged in'];
+            }
             break;
         
         // Login check
@@ -802,43 +791,25 @@ if (isset($_GET['page'])) {
         
         // Add image
         case 'add-image':
-            if(isset($_FILES['sample_image']))
-            {
-            
+            if (isset($_FILES['sample_image'])) {
                 $extension = pathinfo($_FILES['sample_image']['name'], PATHINFO_EXTENSION);
-            
                 $new_name = time() . '.' . $extension;
-            
-                move_uploaded_file($_FILES['sample_image']['tmp_name'], 'uploads/' . $new_name);
-            
-                $data = array(
-                    'image_source'		=>	'uploads/' . $new_name
-                );
-            
+                move_uploaded_file($_FILES['sample_image']['tmp_name'], 'ws/uploads/' . $new_name);
+                $data = array('image_source'=>'ws/uploads/' . $new_name);
                 upload_to_db($new_name);
                 echo json_encode($data);
-            
             }
             break;
 
         // Add image
         case 'edit-image':
-            if(isset($_FILES['sample_image_edit']))
-            {
-            
+            if (isset($_FILES['sample_image_edit'])) {
                 $extension = pathinfo($_FILES['sample_image_edit']['name'], PATHINFO_EXTENSION);
-            
                 $new_name = time() . '.' . $extension;
-            
-                move_uploaded_file($_FILES['sample_image_edit']['tmp_name'], 'uploads/' . $new_name);
-            
-                $data = array(
-                    'image_source'		=>	'uploads/' . $new_name
-                );
-            
+                move_uploaded_file($_FILES['sample_image_edit']['tmp_name'], 'ws/uploads/' . $new_name);
+                $data = array('image_source'=>'ws/uploads/' . $new_name);
                 upload_to_db($new_name);
                 echo json_encode($data);
-            
             }
             break;
 
@@ -869,7 +840,6 @@ if (isset($_GET['page'])) {
         case 'edit-animal-image':
             if (isUserLoggedIn()) {
                 if (isset($_POST['animal_id'], $_POST['image_id'])) {
-                    // if (number_regexCheck($_POST['animal_id'], $_POST['species_id'])) {
                         if (db_editAnimalImage($_POST['animal_id'], $_POST['image_id'])) {
                             $resp_code = http_response_code(200);
                             $resp_body = ['edit-animal-image' => true];
@@ -877,10 +847,6 @@ if (isset($_GET['page'])) {
                             $resp_code = http_response_code(400);
                             $resp_body = ['edit-animal-image' => 'db fail'];
                         }
-                    // } else {
-                    //     $resp_code = http_response_code(400);
-                    //     $resp_body = ['edit-animal-image' => 'empty value/s'];
-                    // }
                 } else {
                     $resp_code = http_response_code(400);
                     $resp_body = ['edit-animal-image' => 'post error'];
@@ -926,16 +892,3 @@ if (isset($_GET['page'])) {
 */
 
 // db_log(session_id(), ($_SERVER['QUERY_STRING']), http_response_code(), $_SESSION['user'], $_SERVER['REMOTE_ADDR'], $_SESSION['role']);
-
-/*
-*
-* Debugging
-* 
-*/
-
-// echo json_encode(http_response_code());
-// echo json_encode($resp_body);
-// echo json_encode($_SESSION['user']);
-// echo json_encode($_SERVER);
-// echo ($_SESSION['user_id']);
-// echo json_encode($res);
