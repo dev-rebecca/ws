@@ -6,8 +6,8 @@
 4. In your terminal within "wildlife-watcher", run "npm update" to install all required packages. 
 5. The app should be functional! Either register your own account or use the following to login for some preset data:
 
-    email: bob@gmail.com
-    password: Password!1
+  - Email: bob@gmail.com
+  - Password: Password!1
 
 Happy wildlife watching!
 
